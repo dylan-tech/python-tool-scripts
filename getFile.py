@@ -1,32 +1,39 @@
-import wget
-import time
+import datetime
 import re
+import time
+import wget
 from ucloud.client import Client
 from getApiCsv import ssh_scp_get
 from getSlowLog import gettimestamp, createslowlog, getlogdownloadurl, getslowloglist, getslowlogid, move, uncompresstgz
+from dingding import ding_text
 
+
+
+DOAMIN = "xxx"          # 访问域名，IP亦可
+DATE = datetime.datetime.date(datetime.datetime.now())
+
+# dingding api
+ding_api = "xxx"        # 钉钉群机器人webhook
 
 # API CSV 配置
 PORT = 22
 USER = 'root'
-IP = "107.150.96.108"
-PASSWORD = "jqowzohwo!1"
+IP = "xxx"              # api文件所在服务器IP
+PASSWORD = "xxx"        
 
 date = time.strftime("%Y%m%d")
-api_filename = "/var/log/nginx/api_ec_youmobi_com.access_log-{date}.csv".format(date=date)
-local_filename = "C:/Users/Administrator/Desktop/analysis/api_ec_youmobi_com.access_log-{date}.csv".format(date=date)
+api_filename = "XXX/xxx{date}.csv".format(date=date)         # api源路径
+local_filename = "XXX/xxx{date}.csv".format(date=date)       # 保存的路径
 
-# api_filename = "/var/log/nginx/api_ec_youmobi_com.access_log-20191009.csv"
-# local_filename = "C:/Users/Administrator/Desktop/analysis/api_ec_youmobi_com.access_log-20191009.csv"
 
 # slowlog 配置
-REGION = "us-ca"
-PROJECT_ID = "org-27257"
-PUBLIC_KEY = "1UfzNpviWgrjvICMiho6sS0TEoGlind9/pkkOaN9v2DeQMemvHt1B+Xtyp0="
-PRIVATE_KEY = "mm/L+ymhzLoJOGcrUkbzPQPHgN8GifmqY0jzUfGQRNuiYrugX8nH1Xjvv1SHjEnh"
-DBID = "udbha-fwvtmj"
-ZONE = "us-ca-01"
-DIR = "C:/Users/Administrator/Desktop/analysis"
+REGION = "XXX"          # 所在地区
+PROJECT_ID = "XXX"      # 项目ID， 可以通过Ucloud UAPI示例代码查询
+PUBLIC_KEY = "xxx"      # ucloud api 公钥
+PRIVATE_KEY = "xxx"     # ucloud api 私钥
+DBID = "xxx"            # UDB 资源Id
+ZONE = "xxx"            # 所有区域
+DIR = "xxx"             # 目标保存位置 
 
 # 获取api csv
 try:
@@ -63,4 +70,11 @@ except Exception as e:
     print(e)
 else:
     print("下载当天slowlog日志成功")
+    
+    
+# 发送链接到钉钉群
+api_download_url = "http://{domain}/api/api_ec_youmobi_com.access_log-{date}.csv".format(domain=DOMAIN, date=date)
+slow_download_url = "http://{domain}/slow/ymcore-slowlog-{date}.log".format(domain=DOMAIN, date=date)
+content = "{DATE} api csv文件: \n{api_url}\n{DATE} slowlog文件: \n{slow_url}".format(DATE=DATE, api_url=api_download_url, slow_url=slow_download_url)
+ding_text(ding_api, content)
 
