@@ -10,3 +10,6 @@ getSlowLog.py
 	
 getApiCsv.py
 	something like linux scp command.
+
+dingding.py
+	add send message to dingding group.
