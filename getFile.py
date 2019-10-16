@@ -68,7 +68,7 @@ try:
             "private_key": PRIVATE_KEY,
         })
 
-    START_TIME, END_TIME = gettimestamp()
+    START_TIME, END_TIME = gettimestamp(1)
     LOG_NAME = "slowlog-{}.log".format(date)
 
     createslowlog(client, db_id=DBID, start_time=START_TIME, finish_time=END_TIME, log_name=LOG_NAME)

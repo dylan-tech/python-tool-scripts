@@ -6,7 +6,7 @@ import tarfile
 from ucloud.core import exc
 
 
-def gettimestamp():
+def gettimestamp(day):
     """
     因为时差15小时，所以生成slowlog日志时间选择增加15小时的，
     如想获取2019.1.1 00：00：00 到 2019.1.1 23：59：59的慢日志记录
@@ -14,7 +14,7 @@ def gettimestamp():
     """
 
     today = datetime.date.today()
-    yesterday = today - datetime.timedelta(days=1)
+    yesterday = today - datetime.timedelta(days=day)
     yesterday_start_time = int(time.mktime(time.strptime(str(yesterday), '%Y-%m-%d'))) + 15 * 3600
     yesterday_end_time = int(time.mktime(time.strptime(str(today), '%Y-%m-%d'))) + 15 * 3600
     return yesterday_start_time, yesterday_end_time
