@@ -2,12 +2,26 @@ import datetime
 import re
 import time
 import wget
+import logging
 from ucloud.client import Client
 from getApiCsv import ssh_scp_get
 from getSlowLog import gettimestamp, createslowlog, getlogdownloadurl, getslowloglist, getslowlogid, move, uncompresstgz
 from dingding import ding_text
 
+# 添加日志功能
+path = "xxx"
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
+while logger.hasHandlers():
+    for i in logger.handlers:
+        logger.removeHandler(i)
+
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+fh = logging.FileHandler(path, encoding="utf-8")
+fh.setLevel(logging.INFO)
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 
 DOAMIN = "xxx"          # 访问域名，IP亦可
 DATE = datetime.datetime.date(datetime.datetime.now())
@@ -37,16 +51,16 @@ DIR = "xxx"             # 目标保存位置
 
 # 获取api csv
 try:
-    print("正在获取今天api csv文件")
+    logger.info("正在获取今天api csv文件")
     ssh_scp_get(ip=IP, port=PORT, user=USER, password=PASSWORD, remote_file=api_filename, local_file=local_filename)
 except Exception as e:
-    print(e)
+    logger.error(e)
 else:
-    print("api csv文件已保存")
+    logger.info("api csv文件已保存")
 
 # 获取slowlog
 try:
-    print("开始执行slowlog日志打包下载")
+    logger.info("开始执行slowlog日志打包下载")
     client = Client({
             "region": REGION,
             "project_id": PROJECT_ID,
@@ -67,9 +81,9 @@ try:
     uncompresstgz(downloaded_filename)
     move(downloaded_filename, dst=DIR, new_name="ymcore-slowlog-{}.log".format(date))
 except Exception as e:
-    print(e)
+    logger.error(e)
 else:
-    print("下载当天slowlog日志成功")
+    logger.info("下载当天slowlog日志成功")
     
     
 # 发送链接到钉钉群
