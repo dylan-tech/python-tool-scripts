@@ -2,6 +2,7 @@
 import re
 import csv
 import argparse
+import datetime
 
 
 parser = argparse.ArgumentParser()
@@ -85,6 +86,7 @@ header = ["请求方法", "请求链接uri", "最大请求时长", "最小请求
 
 with open(logfile +".csv", "w", newline="", encoding="utf-8-sig") as f:
     f_csv = csv.writer(f)
+    f_csv.writerow([datetime.datetime.date(datetime.datetime.now())])
     f_csv.writerow(header)
     for uri in infos.keys():
         for method in infos[uri].keys():
